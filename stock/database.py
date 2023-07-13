@@ -20,7 +20,7 @@ def teardown_db(exception=None):
     db_session.remove()
 
 def init_database():
-    from models import Consumer, Supplier, Product, Stock, CustomerOrder, SupplierOrder, ConsumerTransaction, SupplierTransaction
+    from models import Consumer, Supplier, Product, Stock, ConsumerOrder, SupplierOrder, ConsumerTransaction, SupplierTransaction
     from flask import current_app
     db.drop_all(bind=engine)
     db.create_all(bind=engine)

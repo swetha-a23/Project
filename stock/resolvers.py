@@ -1,4 +1,4 @@
-from models import Supplier, Stock, Consumer, Product, SupplierOrder, CustomerOrder, SupplierTransaction, ConsumerTransaction
+from models import Supplier, Stock, Consumer, Product, SupplierOrder, ConsumerOrder, SupplierTransaction, ConsumerTransaction
 from database import db_session
 from dao import *
 
@@ -57,11 +57,11 @@ def resolve_get_product_by_id(_, info, product_id):
 def resolve_get_all_products(_, info):
     return get_all_products()
 
-def resolve_create_product(_, info, product_name, price, description):
-    return create_product(product_name, price, description)
+def resolve_create_product(_, info, product_name, amount, description):
+    return create_product(product_name, amount, description)
 
-def resolve_update_product(_, info, product_id, product_name, price, description):
-    return update_product(product_id, product_name, price, description)
+def resolve_update_product(_, info, product_id, product_name, amount, description):
+    return update_product(product_id, product_name, amount, description)
 
 def resolve_delete_product(_, info, product_id):
     return delete_product(product_id)
@@ -73,30 +73,30 @@ def resolve_get_supplier_order_by_id(_, info, order_id):
 def resolve_get_all_supplier_orders(_, info):
     return get_all_supplier_orders()
 
-def resolve_create_supplier_order(_, info, supplier_id, stock_id, order_date, quantity, total_amount):
-    return create_supplier_order(supplier_id, stock_id, order_date, quantity, total_amount)
+def resolve_create_supplier_order(_, info, supplier_id, stock_id, order_date, quantity):
+    return create_supplier_order(supplier_id, stock_id, order_date, quantity)
 
-def resolve_update_supplier_order(_, info, order_id, supplier_id, stock_id, order_date, quantity, total_amount):
-    return update_supplier_order(order_id, supplier_id, stock_id, order_date, quantity, total_amount)
+def resolve_update_supplier_order(_, info, order_id, supplier_id, stock_id, order_date, quantity):
+    return update_supplier_order(order_id, supplier_id, stock_id, order_date, quantity)
 
 def resolve_delete_supplier_order(_, info, order_id):
     return delete_supplier_order(order_id)
 
-# CustomerOrder Resolvers
-def resolve_get_customer_order_by_id(_, info, order_id):
-    return get_customer_order_by_id(order_id)
+# ConsumerOrder Resolvers
+def resolve_get_consumer_order_by_id(_, info, order_id):
+    return get_consumer_order_by_id(order_id)
 
-def resolve_get_all_customer_orders(_, info):
-    return get_all_customer_orders()
+def resolve_get_all_consumer_orders(_, info):
+    return get_all_consumer_orders()
 
-def resolve_create_customer_order(_, info, consumer_id, product_id, order_date, quantity, total_amount):
-    return create_customer_order(consumer_id, product_id, order_date, quantity, total_amount)
+def resolve_create_consumer_order(_, info, consumer_id, product_id, order_date, quantity):
+    return create_consumer_order(consumer_id, product_id, order_date, quantity)
 
-def resolve_update_customer_order(_, info, order_id, consumer_id, product_id, order_date, quantity, total_amount):
-    return update_customer_order(order_id, consumer_id, product_id, order_date, quantity, total_amount)
+def resolve_update_consumer_order(_, info, order_id, consumer_id, product_id, order_date, quantity):
+    return update_consumer_order(order_id, consumer_id, product_id, order_date, quantity)
 
-def resolve_delete_customer_order(_, info, order_id):
-    return delete_customer_order(order_id)
+def resolve_delete_consumer_order(_, info, order_id):
+    return delete_consumer_order(order_id)
 
 # SupplierTransaction Resolvers
 def resolve_get_supplier_transaction_by_id(_, info, transaction_id):
@@ -105,11 +105,11 @@ def resolve_get_supplier_transaction_by_id(_, info, transaction_id):
 def resolve_get_all_supplier_transactions(_, info):
     return get_all_supplier_transactions()
 
-def resolve_create_supplier_transaction(_, info, product_id, supplier_id, transaction_date, amount):
-    return create_supplier_transaction(product_id, supplier_id, transaction_date, amount)
+def resolve_create_supplier_transaction(_, info, supplier_id, order_id, transaction_date):
+    return create_supplier_transaction(supplier_id,order_id, transaction_date)
 
-def resolve_update_supplier_transaction(_, info, transaction_id, product_id, supplier_id, transaction_date, amount):
-    return update_supplier_transaction(transaction_id, product_id, supplier_id, transaction_date, amount)
+def resolve_update_supplier_transaction(_, info, transaction_id, supplier_id, order_id, transaction_date):
+    return update_supplier_transaction(transaction_id, supplier_id, order_id, transaction_date)
 
 def resolve_delete_supplier_transaction(_, info, transaction_id):
     return delete_supplier_transaction(transaction_id)
@@ -121,11 +121,11 @@ def resolve_get_consumer_transaction_by_id(_, info, transaction_id):
 def resolve_get_all_consumer_transactions(_, info):
     return get_all_consumer_transactions()
 
-def resolve_create_consumer_transaction(_, info, consumer_id, order_id, stock_id, transaction_date, amount):
-    return create_consumer_transaction(consumer_id, order_id, stock_id, transaction_date, amount)
+def resolve_create_consumer_transaction(_, info, consumer_id, order_id, stock_id, transaction_date):
+    return create_consumer_transaction(consumer_id, order_id, stock_id, transaction_date)
 
-def resolve_update_consumer_transaction(_, info, transaction_id, consumer_id, order_id, stock_id, transaction_date, amount):
-    return update_consumer_transaction(transaction_id, consumer_id, order_id, stock_id, transaction_date, amount)
+def resolve_update_consumer_transaction(_, info, transaction_id, consumer_id, order_id, stock_id, transaction_date):
+    return update_consumer_transaction(transaction_id, consumer_id, order_id, stock_id, transaction_date)
 
 def resolve_delete_consumer_transaction(_, info, transaction_id):
     return delete_consumer_transaction(transaction_id)

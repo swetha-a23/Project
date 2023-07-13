@@ -25,13 +25,13 @@ class Product(Base):
 
     product_id = Column(Integer, primary_key=True)
     product_name = Column(String(255))
-    price = Column(Integer)
+    amount = Column(Numeric(10, 2))
     description = Column(String)
 
     supplier_id = Column(Integer, ForeignKey('supplier.supplier_id'))
     supplier = relationship("Supplier", back_populates="products")
     stocks = relationship("Stock", backref="product")
-    consumer_orders = relationship("CustomerOrder", backref="product")
+    consumer_orders = relationship("ConsumerOrder", backref="product")
 
 
 class Stock(Base):
@@ -54,7 +54,7 @@ class Consumer(Base):
     consumer_address = Column(String(255))
     contact_number = Column(String)
 
-    consumer_orders = relationship("CustomerOrder", backref="consumer")
+    consumer_orders = relationship("ConsumerOrder", backref="consumer")
     consumer_transactions = relationship("ConsumerTransaction", backref="consumer")
 
 
@@ -64,45 +64,44 @@ class SupplierOrder(Base):
     order_id = Column(Integer, primary_key=True)
     supplier_id = Column(Integer, ForeignKey('supplier.supplier_id'))
     stock_id = Column(Integer, ForeignKey('stock.stock_id'))
-    order_date = Column(DateTime, default=func.current_timestamp())
+    order_date = Column(DateTime)
     quantity = Column(Integer)
-    total_amount = Column(Integer)
+    total_amount = Column(Numeric(10, 2))
 
     def calculate_total_price(self):
         if self.product:
-            self.total_price = self.quantity * self.product.amount
+            self.total_amount = self.quantity * self.product.amount
 
 
-
-class CustomerOrder(Base):
-    __tablename__ = 'customer_order'
+class ConsumerOrder(Base):
+    __tablename__ = 'consumer_order'
 
     order_id = Column(Integer, primary_key=True)
     consumer_id = Column(Integer, ForeignKey('consumer.consumer_id'))
     product_id = Column(Integer, ForeignKey('product.product_id'))
-    order_date = Column(DateTime, default=func.current_timestamp())
+    order_date = Column(DateTime)
     quantity = Column(Integer)
-    total_amount = Column(Integer)
+    total_amount = Column(Numeric(10, 2))
 
     def calculate_total_price(self):
         if self.product:
-            self.total_price = self.quantity * self.product.amount
-
+            self.total_amount = self.quantity * self.product.amount
 
 
 class SupplierTransaction(Base):
     __tablename__ = 'supplier_transaction'
 
-    transaction_id = Column(Integer, primary_key=True)
-    product_id = Column(Integer, ForeignKey('product.product_id'))
+    transaction_id = Column(Integer, primary_key=True, nullable=False)
     supplier_id = Column(Integer, ForeignKey('supplier.supplier_id'))
-    transaction_date = Column(DateTime, default=func.current_timestamp())
+    order_id = Column(Integer, ForeignKey('supplier_order.order_id'))
     amount = Column(Numeric(10, 2), nullable=False)
+    transaction_date = Column(DateTime, nullable=False)
+
+    supplier_order = relationship('SupplierOrder', backref='supplier_transactions')
 
     def set_amount_from_order(self):
-        if self.order:
-            self.amount = self.order.total_amount
-
+        if self.order_id:
+            self.amount = SupplierOrder.total_amount
 
 
 class ConsumerTransaction(Base):
@@ -111,13 +110,16 @@ class ConsumerTransaction(Base):
     transaction_id = Column(Integer, primary_key=True)
     consumer_id = Column(Integer, ForeignKey('consumer.consumer_id'))
     stock_id = Column(Integer, ForeignKey('stock.stock_id'))
-    order_id = Column(Integer, ForeignKey('customer_order.order_id'))
+    order_id = Column(Integer, ForeignKey('consumer_order.order_id'))
     transaction_date = Column(DateTime)
     amount = Column(Numeric(10, 2), nullable=False)
 
+    consumer_order = relationship('ConsumerOrder', backref='consumer_transactions')
+
+
     def set_amount_from_order(self):
-        if self.order:
-            self.amount = self.order.total_amount
+        if self.order_id:
+            self.amount = ConsumerOrder.total_amount
 
 
 if __name__ == '__main__':

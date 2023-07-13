@@ -12,6 +12,7 @@ class SupplierSchema:
     supplier_address: str
     contact_number: str
 
+
 # Stock Schema
 @strawberry.type
 class StockSchema:
@@ -33,10 +34,10 @@ class ConsumerSchema:
 class ProductSchema:
     product_id: int
     product_name: str
-    price: float
+    amount: float
     description: str
 
-# SupplierOrder Schema
+#SupplierOrder
 @strawberry.type
 class SupplierOrderSchema:
     order_id: int
@@ -45,25 +46,46 @@ class SupplierOrderSchema:
     order_date: datetime
     quantity: int
     total_amount: int
+    product: ProductSchema
 
-# CustomerOrder Schema
+    @strawberry.field
+    def calculate_total_price(self) -> int:
+        product = get_product_by_id(self.stock_id)
+        if product:
+            return self.quantity * product.amount
+        return 0
+
+#ConsumerOrder
 @strawberry.type
-class CustomerOrderSchema:
+class ConsumerOrderSchema:
     order_id: int
     consumer_id: int
     product_id: int
     order_date: datetime
     quantity: int
     total_amount: int
+    product: ProductSchema
+
+    @strawberry.field
+    def calculate_total_price(self) -> int:
+        product = get_product_by_id(self.product_id)
+        if product:
+            return self.quantity * product.amount
+        return 0
+
 
 # SupplierTransaction Schema
 @strawberry.type
 class SupplierTransactionSchema:
     transaction_id: int
-    product_id: int
     supplier_id: int
-    transaction_date: datetime
+    order_id: int
     amount: float
+    transaction_date: str
+    order: SupplierOrderSchema
+
+
+
 
 # ConsumerTransaction Schema
 @strawberry.type
@@ -74,6 +96,9 @@ class ConsumerTransactionSchema:
     stock_id: int
     transaction_date: datetime
     amount: float
+    order: ConsumerOrderSchema
+
+
 
 # Query Schema
 @strawberry.type
@@ -119,12 +144,12 @@ class Query:
         return get_supplier_order_by_id(order_id)
 
     @strawberry.field
-    def getAllCustomerOrders(self) -> List[CustomerOrderSchema]:
-        return get_all_customer_orders()
+    def getAllConsumerOrders(self) -> List[ConsumerOrderSchema]:
+        return get_all_consumer_orders()
 
     @strawberry.field
-    def getCustomerOrderById(self, order_id: int) -> CustomerOrderSchema:
-        return get_customer_order_by_id(order_id)
+    def getConsumerOrderById(self, order_id: int) -> ConsumerOrderSchema:
+        return get_consumer_order_by_id(order_id)
 
     @strawberry.field
     def getAllSupplierTransactions(self) -> List[SupplierTransactionSchema]:
@@ -142,103 +167,176 @@ class Query:
     def getConsumerTransactionById(self, transaction_id: int) -> ConsumerTransactionSchema:
         return get_consumer_transaction_by_id(transaction_id)
 
+
 # Mutation Schema
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def create_supplier(supplier_name: str, supplier_address: str, contact_number: str) -> SupplierSchema:
+    def create_supplier(self, info, supplier_name: str, supplier_address: str, contact_number: str) -> SupplierSchema:
         return create_supplier(supplier_name, supplier_address, contact_number)
 
     @strawberry.mutation
-    def update_supplier(supplier_id: int, supplier_name: str, supplier_address: str, contact_number: str) -> SupplierSchema:
+    def update_supplier(
+        self,
+        info,
+        supplier_id: int,
+        supplier_name: str,
+        supplier_address: str,
+        contact_number: str,
+    ) -> SupplierSchema:
         return update_supplier(supplier_id, supplier_name, supplier_address, contact_number)
 
     @strawberry.mutation
-    def delete_supplier(supplier_id: int) -> SupplierSchema:
+    def delete_supplier(self, info, supplier_id: int) -> SupplierSchema:
         return delete_supplier(supplier_id)
 
     @strawberry.mutation
-    def create_stock(product_id: int, quantity: int, location: str) -> StockSchema:
+    def create_stock(self, info, product_id: int, quantity: int, location: str) -> StockSchema:
         return create_stock(product_id, quantity, location)
 
     @strawberry.mutation
-    def update_stock(stock_id: int, product_id: int, quantity: int, location: str) -> StockSchema:
+    def update_stock(self, info, stock_id: int, product_id: int, quantity: int, location: str) -> StockSchema:
         return update_stock(stock_id, product_id, quantity, location)
 
     @strawberry.mutation
-    def delete_stock(stock_id: int) -> StockSchema:
+    def delete_stock(self, info, stock_id: int) -> StockSchema:
         return delete_stock(stock_id)
 
     @strawberry.mutation
-    def create_consumer(consumer_name: str, consumer_address: str, contact_number: str) -> ConsumerSchema:
+    def create_consumer(self, info, consumer_name: str, consumer_address: str, contact_number: str) -> ConsumerSchema:
         return create_consumer(consumer_name, consumer_address, contact_number)
 
     @strawberry.mutation
-    def update_consumer(consumer_id: int, consumer_name: str, consumer_address: str, contact_number: str) -> ConsumerSchema:
+    def update_consumer(
+        self,
+        info,
+        consumer_id: int,
+        consumer_name: str,
+        consumer_address: str,
+        contact_number: str,
+    ) -> ConsumerSchema:
         return update_consumer(consumer_id, consumer_name, consumer_address, contact_number)
 
     @strawberry.mutation
-    def delete_consumer(consumer_id: int) -> ConsumerSchema:
+    def delete_consumer(self, info, consumer_id: int) -> ConsumerSchema:
         return delete_consumer(consumer_id)
 
     @strawberry.mutation
-    def create_product(product_name: str, price: float, description: str) -> ProductSchema:
-        return create_product(product_name, price, description)
+    def create_product(self, info, product_name: str, amount: float, description: str) -> ProductSchema:
+        return create_product(product_name, amount, description)
 
     @strawberry.mutation
-    def update_product(product_id: int, product_name: str, price: float, description: str) -> ProductSchema:
-        return update_product(product_id, product_name, price, description)
+    def update_product(self, info, product_id: int, product_name: str, amount: float, description: str) -> ProductSchema:
+        return update_product(product_id, product_name, amount, description)
 
     @strawberry.mutation
-    def delete_product(product_id: int) -> ProductSchema:
+    def delete_product(self, info, product_id: int) -> ProductSchema:
         return delete_product(product_id)
 
     @strawberry.mutation
-    def create_supplier_order(supplier_id: int, stock_id: int, order_date: datetime, quantity: int, total_amount: int) -> SupplierOrderSchema:
-        return create_supplier_order(supplier_id, stock_id, order_date, quantity, total_amount)
+    def create_supplier_order(
+        self,
+        info,
+        supplier_id: int,
+        stock_id: int,
+        order_date: datetime,
+        quantity: int,
+    ) -> SupplierOrderSchema:
+        return create_supplier_order(supplier_id, stock_id, order_date, quantity)
 
     @strawberry.mutation
-    def update_supplier_order(order_id: int, supplier_id: int, stock_id: int, order_date: datetime, quantity: int, total_amount:int) -> SupplierOrderSchema:
-        return update_supplier_order(order_id, supplier_id, stock_id, order_date, quantity, total_amount)
+    def update_supplier_order(
+        self,
+        info,
+        order_id: int,
+        supplier_id: int,
+        stock_id: int,
+        order_date: datetime,
+        quantity: int,
+    ) -> SupplierOrderSchema:
+        return update_supplier_order(order_id, supplier_id, stock_id, order_date, quantity)
 
     @strawberry.mutation
-    def delete_supplier_order(order_id: int) -> SupplierOrderSchema:
+    def delete_supplier_order(self, info, order_id: int) -> SupplierOrderSchema:
         return delete_supplier_order(order_id)
 
     @strawberry.mutation
-    def create_customer_order(consumer_id: int, product_id: int, order_date: datetime, quantity: int, total_amount: int) -> CustomerOrderSchema:
-        return create_customer_order(consumer_id, product_id, order_date, quantity, total_amount)
+    def create_consumer_order(
+        self,
+        info,
+        consumer_id: int,
+        product_id: int,
+        order_date: datetime,
+        quantity: int,
+    ) -> ConsumerOrderSchema:
+        return create_consumer_order(consumer_id, product_id, order_date, quantity)
 
     @strawberry.mutation
-    def update_customer_order(order_id: int, consumer_id: int, product_id: int, order_date: datetime, quantity: int, total_amount: int) -> CustomerOrderSchema:
-        return update_customer_order(order_id, consumer_id, product_id, order_date, quantity, total_amount)
+    def update_consumer_order(
+        self,
+        info,
+        order_id: int,
+        consumer_id: int,
+        product_id: int,
+        order_date: datetime,
+        quantity: int,
+    ) -> ConsumerOrderSchema:
+        return update_consumer_order(order_id, consumer_id, product_id, order_date, quantity)
 
     @strawberry.mutation
-    def delete_customer_order(order_id: int) -> CustomerOrderSchema:
-        return delete_customer_order(order_id)
+    def delete_consumer_order(self, info, order_id: int) -> ConsumerOrderSchema:
+        return delete_consumer_order(order_id)
 
     @strawberry.mutation
-    def create_supplier_transaction(product_id: int, supplier_id: int, transaction_date: datetime, amount: float) -> SupplierTransactionSchema:
-        return create_supplier_transaction(product_id, supplier_id, transaction_date, amount)
+    def create_supplier_transaction(
+        self,
+        info,
+        supplier_id: int,
+        order_id: int,
+        transaction_date: datetime,
+    ) -> SupplierTransactionSchema:
+        return create_supplier_transaction(order_id, supplier_id, transaction_date)
 
     @strawberry.mutation
-    def update_supplier_transaction(transaction_id: int, product_id: int, supplier_id: int, transaction_date: datetime, amount: float) -> SupplierTransactionSchema:
-        return update_supplier_transaction(transaction_id, product_id, supplier_id, transaction_date, amount)
+    def update_supplier_transaction(
+        self,
+        info,
+        transaction_id: int,
+        supplier_id: int,
+        order_id: int,
+        transaction_date: datetime,
+    ) -> SupplierTransactionSchema:
+        return update_supplier_transaction(transaction_id, order_id, supplier_id, transaction_date)
 
     @strawberry.mutation
-    def delete_supplier_transaction(transaction_id: int) -> SupplierTransactionSchema:
+    def delete_supplier_transaction(self, info, transaction_id: int) -> SupplierTransactionSchema:
         return delete_supplier_transaction(transaction_id)
 
     @strawberry.mutation
-    def create_consumer_transaction(consumer_id: int, order_id: int, stock_id: int, transaction_date: datetime, amount: float) -> ConsumerTransactionSchema:
-        return create_consumer_transaction(consumer_id, order_id, stock_id, transaction_date, amount)
+    def create_consumer_transaction(
+        self,
+        info,
+        consumer_id: int,
+        order_id: int,
+        stock_id: int,
+        transaction_date: datetime,
+    ) -> ConsumerTransactionSchema:
+        return create_consumer_transaction(consumer_id, order_id, stock_id, transaction_date)
 
     @strawberry.mutation
-    def update_consumer_transaction(transaction_id: int, consumer_id: int, order_id: int, stock_id: int, transaction_date: datetime, amount: float) -> ConsumerTransactionSchema:
-        return update_consumer_transaction(transaction_id, consumer_id, order_id, stock_id, transaction_date, amount)
+    def update_consumer_transaction(
+        self,
+        info,
+        transaction_id: int,
+        consumer_id: int,
+        order_id: int,
+        stock_id: int,
+        transaction_date: datetime,
+    ) -> ConsumerTransactionSchema:
+        return update_consumer_transaction(transaction_id, consumer_id, order_id, stock_id, transaction_date)
 
     @strawberry.mutation
-    def delete_consumer_transaction(transaction_id: int) -> ConsumerTransactionSchema:
+    def delete_consumer_transaction(self, info, transaction_id: int) -> ConsumerTransactionSchema:
         return delete_consumer_transaction(transaction_id)
 
 

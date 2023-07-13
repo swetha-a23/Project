@@ -29,10 +29,10 @@ class APITestCase(unittest.TestCase):
 
     def test_consumer_dao_functions(self):
         # Create a consumer
-        consumer = create_consumer("Consumer 1", "Address 1", "1234567890")
+        consumer = create_consumer("John", "Chennai", "1234567890")
         self.assertIsNotNone(consumer)
-        self.assertEqual(consumer.consumer_name, "Consumer 1")
-        self.assertEqual(consumer.consumer_address, "Address 1")
+        self.assertEqual(consumer.consumer_name, "John")
+        self.assertEqual(consumer.consumer_address, "Chennai")
         self.assertEqual(consumer.contact_number, "1234567890")
 
         # Get consumer by ID
@@ -40,10 +40,10 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(retrieved_consumer, consumer)
 
         # Update consumer
-        updated_consumer = update_consumer(consumer.consumer_id, "Updated Consumer", "Updated Address", "9876543210")
+        updated_consumer = update_consumer(consumer.consumer_id, "Jessy", "Bangalore", "9876543210")
         self.assertIsNotNone(updated_consumer)
-        self.assertEqual(updated_consumer.consumer_name, "Updated Consumer")
-        self.assertEqual(updated_consumer.consumer_address, "Updated Address")
+        self.assertEqual(updated_consumer.consumer_name, "Jessy")
+        self.assertEqual(updated_consumer.consumer_address, "Bangalore")
         self.assertEqual(updated_consumer.contact_number, "9876543210")
 
         # Delete consumer
@@ -57,10 +57,10 @@ class APITestCase(unittest.TestCase):
 
     def test_supplier_dao_functions(self):
         # Create a supplier
-        supplier = create_supplier("Supplier 1", "Address 1", "1234567890")
+        supplier = create_supplier("Grace", "Chennai", "1234567890")
         self.assertIsNotNone(supplier)
-        self.assertEqual(supplier.supplier_name, "Supplier 1")
-        self.assertEqual(supplier.supplier_address, "Address 1")
+        self.assertEqual(supplier.supplier_name, "Grace")
+        self.assertEqual(supplier.supplier_address, "Chennai")
         self.assertEqual(supplier.contact_number, "1234567890")
 
         # Get supplier by ID
@@ -68,10 +68,10 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(retrieved_supplier, supplier)
 
         # Update supplier
-        updated_supplier = update_supplier(supplier.supplier_id, "Updated Supplier", "Updated Address", "9876543210")
+        updated_supplier = update_supplier(supplier.supplier_id, "Reliance Mart", "Chennai", "9876543210")
         self.assertIsNotNone(updated_supplier)
-        self.assertEqual(updated_supplier.supplier_name, "Updated Supplier")
-        self.assertEqual(updated_supplier.supplier_address, "Updated Address")
+        self.assertEqual(updated_supplier.supplier_name, "Reliance Mart")
+        self.assertEqual(updated_supplier.supplier_address, "Mysore")
         self.assertEqual(updated_supplier.contact_number, "9876543210")
 
         # Delete supplier
@@ -85,22 +85,22 @@ class APITestCase(unittest.TestCase):
 
     def test_product_dao_functions(self):
         # Create a product
-        product = create_product("Product 1", 10, "Description 1")
+        product = create_product("Rice", 1500, "Food product")
         self.assertIsNotNone(product)
-        self.assertEqual(product.product_name, "Product 1")
-        self.assertEqual(product.price, 10)
-        self.assertEqual(product.description, "Description 1")
+        self.assertEqual(product.product_name, "Rice")
+        self.assertEqual(product.price, 1500)
+        self.assertEqual(product.description, "Food product")
 
         # Get product by ID
         retrieved_product = get_product_by_id(product.product_id)
         self.assertEqual(retrieved_product, product)
 
         # Update product
-        updated_product = update_product(product.product_id, "Updated Product", 20, "Updated Description")
+        updated_product = update_product(product.product_id, "Drinks", 20, "soft drink")
         self.assertIsNotNone(updated_product)
-        self.assertEqual(updated_product.product_name, "Updated Product")
+        self.assertEqual(updated_product.product_name, "Drinks")
         self.assertEqual(updated_product.price, 20)
-        self.assertEqual(updated_product.description, "Updated Description")
+        self.assertEqual(updated_product.description, "soft drink")
 
         # Delete product
         deleted_product = delete_product(product.product_id)
@@ -113,10 +113,10 @@ class APITestCase(unittest.TestCase):
 
     def test_supplier_order_dao_functions(self):
         # Create a supplier
-        supplier = create_supplier("Supplier 1", "Address 1", "1234567890")
+        supplier = create_supplier("Grace", "Chennai", "1234567890")
 
         # Create a product
-        product = create_product("Product 1", 10, "Description 1")
+        product = create_product("Rice", 60, "Food product")
 
         # Create a supplier order
         supplier_order = create_supplier_order(supplier.supplier_id, product.product_id, "2023-07-07", 5, 50)
@@ -149,24 +149,24 @@ class APITestCase(unittest.TestCase):
 
     def test_stock_dao_functions(self):
         # Create a product
-        product = create_product("Product 1", 10, "Description 1")
+        product = create_product("Rice", 60, "Food product")
 
         # Create a stock
-        stock = create_stock(product.product_id, 50, "Location 1")
+        stock = create_stock(product.product_id, 60, "Assam")
         self.assertIsNotNone(stock)
         self.assertEqual(stock.product_id, product.product_id)
-        self.assertEqual(stock.quantity, 50)
-        self.assertEqual(stock.location, "Location 1")
+        self.assertEqual(stock.quantity, 60)
+        self.assertEqual(stock.location, "Assam")
 
         # Get stock by ID
         retrieved_stock = get_stock_by_id(stock.stock_id)
         self.assertEqual(retrieved_stock, stock)
 
         # Update stock
-        updated_stock = update_stock(stock.stock_id, product.product_id, 100, "Updated Location")
+        updated_stock = update_stock(stock.stock_id, product.product_id, 100, "Tamil Nadu")
         self.assertIsNotNone(updated_stock)
         self.assertEqual(updated_stock.quantity, 100)
-        self.assertEqual(updated_stock.location, "Updated Location")
+        self.assertEqual(updated_stock.location, "Tamil Nadu")
 
         # Delete stock
         deleted_stock = delete_stock(stock.stock_id)
