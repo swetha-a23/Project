@@ -13,8 +13,8 @@ from resolvers import *
 class TestSupplierResolvers(unittest.TestCase):
     def setUp(self):
         self.supplier_id = 1
-        self.supplier_name = "Supplier 1"
-        self.supplier_address = "Address 1"
+        self.supplier_name = "Grace"
+        self.supplier_address = "Chennai"
         self.contact_number = "1234567890"
 
     def test_resolve_get_supplier_by_id(self):
@@ -33,14 +33,14 @@ class TestSupplierResolvers(unittest.TestCase):
         suppliers = [
             Supplier(
                 supplier_id=1,
-                supplier_name="Supplier 1",
-                supplier_address="Address 1",
+                supplier_name="Grace",
+                supplier_address="Chennai",
                 contact_number="1234567890",
             ),
             Supplier(
                 supplier_id=2,
-                supplier_name="Supplier 2",
-                supplier_address="Address 2",
+                supplier_name="Reliance fresh",
+                supplier_address="Bangalore",
                 contact_number="9876543210",
             ),
         ]
@@ -107,8 +107,8 @@ class TestStockResolvers(unittest.TestCase):
     def setUp(self):
         self.stock_id = 1
         self.product_id = 1
-        self.quantity = 10
-        self.location = "Location 1"
+        self.quantity = 60
+        self.location = "Assam"
 
     def test_resolve_get_stock_by_id(self):
         stock = Stock(
@@ -124,8 +124,8 @@ class TestStockResolvers(unittest.TestCase):
 
     def test_resolve_get_all_stock(self):
         stocks = [
-            Stock(stock_id=1, product_id=1, quantity=10, location="Location 1"),
-            Stock(stock_id=2, product_id=2, quantity=5, location="Location 2"),
+            Stock(stock_id=1, product_id=1, quantity=60, location="Assam"),
+            Stock(stock_id=2, product_id=2, quantity=75, location="Tamil Nadu"),
         ]
         db_session.query = MagicMock(return_value=stocks)
 
@@ -184,8 +184,8 @@ class TestStockResolvers(unittest.TestCase):
 class TestConsumerResolvers(unittest.TestCase):
     def setUp(self):
         self.consumer_id = 1
-        self.consumer_name = "Consumer 1"
-        self.consumer_address = "Address 1"
+        self.consumer_name = "John"
+        self.consumer_address = "Chennai"
         self.contact_number = "1234567890"
 
     def test_resolve_get_consumer_by_id(self):
@@ -204,14 +204,14 @@ class TestConsumerResolvers(unittest.TestCase):
         consumers = [
             Consumer(
                 consumer_id=1,
-                consumer_name="Consumer 1",
-                consumer_address="Address 1",
+                consumer_name="John",
+                consumer_address="Chennai",
                 contact_number="1234567890",
             ),
             Consumer(
                 consumer_id=2,
-                consumer_name="Consumer 2",
-                consumer_address="Address 2",
+                consumer_name="Adam",
+                consumer_address="Bangalore",
                 contact_number="9876543210",
             ),
         ]
@@ -274,9 +274,9 @@ class TestConsumerResolvers(unittest.TestCase):
 class TestProductResolvers(unittest.TestCase):
     def setUp(self):
         self.product_id = 1
-        self.product_name = "Product 1"
-        self.amount = 10.99
-        self.description = "Description 1"
+        self.product_name = "Rice"
+        self.amount = 1500
+        self.description = "Food Product"
 
     def test_resolve_get_product_by_id(self):
         product = Product(
@@ -294,15 +294,15 @@ class TestProductResolvers(unittest.TestCase):
         products = [
             Product(
                 product_id=1,
-                product_name="Product 1",
-                amount=10.99,
-                description="Description 1",
+                product_name="Rice",
+                amount=1500,
+                description="Food Product",
             ),
             Product(
                 product_id=2,
-                product_name="Product 2",
-                amount=15.99,
-                description="Description 2",
+                product_name="Wheat",
+                amount=2000,
+                description="Food product",
             ),
         ]
         db_session.query = MagicMock(return_value=products)
