@@ -1,7 +1,6 @@
 from schemas import *
 import json
 
-
 def lambda_handler(event, context):
     print(event)
     
@@ -11,17 +10,25 @@ def lambda_handler(event, context):
     elif event.get('info').get('fieldName') == 'get_all_suppliers':
         return Query().get_all_suppliers()
     
+    elif event.get('info').get('fieldName') == 'get_stock_by_id':
+        return Query().get_stock_by_id(event.get('arguments').get('stock_id'))
+    
+    elif event.get('info').get('fieldName') == 'get_all_stocks':
+        return Query().get_all_stocks()
+    
+    elif event.get('info').get('fieldName') == 'get_consumer_by_id':
+        return Query().get_consumer_by_id(event.get('arguments').get('consumer_id'))
+    
+    elif event.get('info').get('fieldName') == 'get_all_consumers':
+        return Query().get_all_consumers()
+    
+    
     elif event.get('info').get('fieldName') == 'get_product_by_id':
         return Query().get_product_by_id(event.get('arguments').get('product_id'))
     
     elif event.get('info').get('fieldName') == 'get_all_products':
         return Query().get_all_products()
     
-    elif event.get('info').get('fieldName') == 'get_stock_by_id':
-        return Query().get_stock_by_id(event.get('arguments').get('stock_id'))
-    
-    elif event.get('info').get('fieldName') == 'get_all_stocks':
-        return Query().get_all_stocks()
     
     elif event.get('info').get('fieldName') == 'get_supplier_order_by_id':
         return Query().get_supplier_order_by_id(event.get('arguments').get('order_id'))
@@ -35,11 +42,7 @@ def lambda_handler(event, context):
     elif event.get('info').get('fieldName') == 'get_suppliers_by_order_id':
         return Query().get_suppliers_by_order_id(event.get('arguments').get('order_id'))
     
-    elif event.get('info').get('fieldName') == 'get_consumer_by_id':
-        return Query().get_consumer_by_id(event.get('arguments').get('consumer_id'))
     
-    elif event.get('info').get('fieldName') == 'get_all_consumers':
-        return Query().get_all_consumers()
     
     elif event.get('info').get('fieldName') == 'get_consumer_order_by_id':
         return Query().get_consumer_order_by_id(event.get('arguments').get('order_id'))
@@ -108,24 +111,6 @@ def lambda_handler(event, context):
     elif event.get('info').get('fieldName') == 'delete_supplier':
         return Mutation.delete_supplier(event.get('arguments').get('supplier_id'))
     
-    elif event.get('info').get('fieldName') == 'create_product':
-        return Mutation.create_product(
-            event.get('arguments').get('product_name'),
-            event.get('arguments').get('amount'),
-            event.get('arguments').get('description')
-        )
-    
-    elif event.get('info').get('fieldName') == 'update_product':
-        return Mutation.update_product(
-            event.get('arguments').get('product_id'),
-            event.get('arguments').get('product_name'),
-            event.get('arguments').get('amount'),
-            event.get('arguments').get('description')
-        )
-    
-    elif event.get('info').get('fieldName') == 'delete_product':
-        return Mutation.delete_product(event.get('arguments').get('product_id'))
-    
     elif event.get('info').get('fieldName') == 'create_stock':
         return Mutation().create_stock(
             event.get('arguments').get('product_id'),
@@ -145,6 +130,45 @@ def lambda_handler(event, context):
     
     elif event.get('info').get('fieldName') == 'delete_stock':
         return Mutation().delete_stock(event.get('arguments').get('stock_id'))
+    
+    elif event.get('info').get('fieldName') == 'create_consumer':
+        return Mutation().create_consumer(
+            event.get('arguments').get('consumer_name'),
+            event.get('arguments').get('consumer_address'),
+            event.get('arguments').get('contact_number')
+        )
+    
+    elif event.get('info').get('fieldName') == 'update_consumer':
+        return Mutation().update_consumer(
+            event.get('arguments').get('consumer_id'),
+            event.get('arguments').get('consumer_name'),
+            event.get('arguments').get('consumer_address'),
+            event.get('arguments').get('contact_number')
+        )
+    
+    elif event.get('info').get('fieldName') == 'delete_consumer':
+        return Mutation().delete_consumer(event.get('arguments').get('consumer_id')
+        )
+    
+    
+    elif event.get('info').get('fieldName') == 'create_product':
+        return Mutation.create_product(
+            event.get('arguments').get('product_name'),
+            event.get('arguments').get('amount'),
+            event.get('arguments').get('description')
+        )
+    
+    elif event.get('info').get('fieldName') == 'update_product':
+        return Mutation.update_product(
+            event.get('arguments').get('product_id'),
+            event.get('arguments').get('product_name'),
+            event.get('arguments').get('amount'),
+            event.get('arguments').get('description')
+        )
+    
+    elif event.get('info').get('fieldName') == 'delete_product':
+        return Mutation.delete_product(event.get('arguments').get('product_id'))
+    
     
     elif event.get('info').get('fieldName') == 'create_supplier_order':
         return Mutation().create_supplier_order(
@@ -166,23 +190,7 @@ def lambda_handler(event, context):
     elif event.get('info').get('fieldName') == 'delete_supplier_order':
         return Mutation().delete_supplier_order(event.get('arguments').get('order_id'))
     
-    elif event.get('info').get('fieldName') == 'create_consumer':
-        return Mutation().create_consumer(
-            event.get('arguments').get('consumer_name'),
-            event.get('arguments').get('consumer_address'),
-            event.get('arguments').get('contact_number')
-        )
     
-    elif event.get('info').get('fieldName') == 'update_consumer':
-        return Mutation().update_consumer(
-            event.get('arguments').get('consumer_id'),
-            event.get('arguments').get('consumer_name'),
-            event.get('arguments').get('consumer_address'),
-            event.get('arguments').get('contact_number')
-        )
-    
-    elif event.get('info').get('fieldName') == 'delete_consumer':
-        return Mutation().delete_consumer(event.get('arguments').get('consumer_id'))
     
     elif event.get('info').get('fieldName') == 'create_consumer_order':
         return Mutation().create_consumer_order(
@@ -241,8 +249,3 @@ def lambda_handler(event, context):
     
     elif event.get('info').get('fieldName') == 'delete_consumer_transaction':
         return Mutation().delete_consumer_transaction(event.get('arguments').get('transaction_id'))
-
-    
-    
-        
-    
